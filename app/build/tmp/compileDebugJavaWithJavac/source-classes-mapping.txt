@@ -33,6 +33,7 @@ com/google/mlkit/vision/demo/CameraSource.java
  com.google.mlkit.vision.demo.CameraSource$SizePair
 com/google/mlkit/vision/demo/java/LivePreviewActivity.java
  com.google.mlkit.vision.demo.java.LivePreviewActivity
+ com.google.mlkit.vision.demo.java.LivePreviewActivity$1
 com/google/mlkit/vision/demo/preference/SettingsActivity.java
  com.google.mlkit.vision.demo.preference.SettingsActivity
  com.google.mlkit.vision.demo.preference.SettingsActivity$LaunchSource
