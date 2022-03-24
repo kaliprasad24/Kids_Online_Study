@@ -17,11 +17,19 @@
 package com.google.mlkit.vision.demo.java;
 
 
+import static com.google.mlkit.vision.demo.CameraSource.getF;
+import static com.google.mlkit.vision.demo.CameraSource.getSensorX;
+import static com.google.mlkit.vision.demo.CameraSource.getSensorY;
+import static com.google.mlkit.vision.demo.java.facedetector.FaceGraphic.getDeltaX;
+import static com.google.mlkit.vision.demo.java.facedetector.FaceGraphic.getDeltaY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
@@ -73,6 +81,8 @@ public final class LivePreviewActivity extends AppCompatActivity
   // brightness
 
 
+
+
   private CameraSource cameraSource = null;
   private CameraSourcePreview preview;
   private GraphicOverlay graphicOverlay;
@@ -117,6 +127,14 @@ public final class LivePreviewActivity extends AppCompatActivity
     } else {
       getRuntimePermissions();
     }
+
+
+
+
+
+
+
+
 
     // Brightness setter
     context = this;
@@ -297,7 +315,7 @@ public final class LivePreviewActivity extends AppCompatActivity
 
   @Override
   public void onRequestPermissionsResult(
-      int requestCode, String[] permissions, int[] grantResults) {
+          int requestCode, @NonNull String[] permissions, int[] grantResults) {
     Log.i(TAG, "Permission granted!");
     if (allPermissionsGranted()) {
       createCameraSource(selectedModel);
@@ -314,6 +332,11 @@ public final class LivePreviewActivity extends AppCompatActivity
     Log.i(TAG, "Permission NOT granted: " + permission);
     return false;
   }
+
+
+
+
+
 
 
 

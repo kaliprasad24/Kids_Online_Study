@@ -20,6 +20,8 @@ import android.content.Context;
 import android.graphics.PointF;
 import androidx.annotation.NonNull;
 import android.util.Log;
+import android.widget.TextView;
+
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.GraphicOverlay;
@@ -31,6 +33,7 @@ import com.google.mlkit.vision.face.FaceDetectorOptions;
 import com.google.mlkit.vision.face.FaceLandmark;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /** Face Detector Demo. */
 public class FaceDetectorProcessor extends VisionProcessorBase<List<Face>> {
@@ -71,9 +74,22 @@ public class FaceDetectorProcessor extends VisionProcessorBase<List<Face>> {
     for (Face face : faces) {
       graphicOverlay.add(new FaceGraphic(graphicOverlay, face));
       logExtrasForTesting(face);
-
+      //distance(face);
     }
   }
+
+//  public synchronized void distance(Face face){
+//    if (face!= null) {
+//      FaceLandmark leftEye = face.getLandmark(FaceLandmark.LEFT_EYE);
+//      FaceLandmark rightEye = face.getLandmark(FaceLandmark.RIGHT_EYE);
+//      if (leftEye!=null && rightEye!=null) {
+//        float deltaX = Math.abs(leftEye.getPosition().x - rightEye.getPosition().x);
+//        float deltaY = Math.abs(leftEye.getPosition().y - rightEye.getPosition().y);
+//
+//      }
+//
+//    }
+//  }
 
   private static void logExtrasForTesting(Face face) {
     if (face != null) {
@@ -81,6 +97,7 @@ public class FaceDetectorProcessor extends VisionProcessorBase<List<Face>> {
       Log.v(MANUAL_TESTING_LOG, "face Euler Angle X: " + face.getHeadEulerAngleX());
       Log.v(MANUAL_TESTING_LOG, "face Euler Angle Y: " + face.getHeadEulerAngleY());
       Log.v(MANUAL_TESTING_LOG, "face Euler Angle Z: " + face.getHeadEulerAngleZ());
+
 
 
       // All landmarks

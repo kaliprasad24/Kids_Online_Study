@@ -38,12 +38,19 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 
+
+
 /**
  * Manages the camera and allows UI updates on top of it (e.g. overlaying extra Graphics or
  * displaying extra information). This receives preview frames from the camera at a specified rate,
  * sending those frames to child classes' detectors / classifiers as fast as it is able to process.
  */
 public class CameraSource {
+
+  //distance
+  public static float F = 1f;           //focal length
+  public static float sensorX, sensorY; //camera sensor dimensions
+  public static float angleX, angleY;
 
 
   @SuppressLint("InlinedApi")
@@ -167,6 +174,8 @@ public class CameraSource {
 
 
 
+
+
   /**
    * Opens the camera and starts sending preview frames to the underlying detector. The supplied
    * surface holder is used for the preview so frames can be displayed to the user.
@@ -190,7 +199,29 @@ public class CameraSource {
     return this;
   }
 
+  public static float getF() {
+    return F;
+  }
 
+  public static void setF(float f) {
+    F = f;
+  }
+
+  public static void setSensorX(float sensorX) {
+    CameraSource.sensorX = sensorX;
+  }
+
+  public static void setSensorY(float sensorY) {
+    CameraSource.sensorY = sensorY;
+  }
+
+  public static float getSensorY() {
+    return sensorY;
+  }
+
+  public static float getSensorX() {
+    return sensorX;
+  }
 
   /**
    * Closes the camera and stops sending frames to the underlying frame detector.
@@ -214,6 +245,7 @@ public class CameraSource {
       }
       processingThread = null;
     }
+
 
     if (camera != null) {
       camera.stopPreview();
@@ -290,6 +322,17 @@ public class CameraSource {
     }
 
     Camera.Parameters parameters = camera.getParameters();
+
+    // distance parameters
+    F = parameters.getFocalLength();
+    angleX = parameters.getHorizontalViewAngle();
+    angleY = parameters.getVerticalViewAngle();
+    sensorX = (float) (Math.tan(Math.toRadians(angleX / 2)) * 2 * F);
+    sensorY = (float) (Math.tan(Math.toRadians(angleY / 2)) * 2 * F);
+    setSensorX(sensorX);
+    setSensorY(sensorY);
+    setF(F);
+    // distance parameters end
 
 
     Size pictureSize = sizePair.picture;

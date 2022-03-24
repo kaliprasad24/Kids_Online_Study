@@ -15,6 +15,10 @@
  */
 
 package com.google.mlkit.vision.demo.java.facedetector;
+import static com.google.mlkit.vision.demo.CameraSource.getF;
+import static com.google.mlkit.vision.demo.CameraSource.getSensorX;
+import static com.google.mlkit.vision.demo.CameraSource.getSensorY;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -36,6 +40,16 @@ import java.util.Objects;
  * graphic overlay view.
  */
 public class FaceGraphic extends Graphic {
+
+
+  //distance
+  public static float deltaX;
+  public static float deltaY;
+  static final int AVERAGE_EYE_DISTANCE = 63; // in mm
+  static final int IMAGE_WIDTH = 1024;
+  static final int IMAGE_HEIGHT = 1024;
+  //distance
+
 
 
   private static final float FACE_POSITION_RADIUS = 8.0f;
@@ -221,8 +235,36 @@ public class FaceGraphic extends Graphic {
           translateY(leftEye.getPosition().y) + ID_Y_OFFSET,
           idPaints[colorID]);
     }
-
     FaceLandmark rightEye = face.getLandmark(FaceLandmark.RIGHT_EYE);
+
+    //distance
+    if (leftEye!=null && rightEye!=null) {
+      float deltaX = Math.abs(leftEye.getPosition().x - rightEye.getPosition().x);
+      float deltaY = Math.abs(leftEye.getPosition().y - rightEye.getPosition().y);
+      setDeltaX(deltaX);
+      setDeltaY(deltaY);
+    }
+    float F = getF();
+    float sx = getSensorX();
+    float sy = getSensorY();
+    float deltax = getDeltaX();
+    float deltay = getDeltaY();
+    float distance;
+    if (deltax >= deltay) {
+      distance = F * (AVERAGE_EYE_DISTANCE / sx) * (IMAGE_WIDTH / deltax);
+    } else {
+      distance = F * (AVERAGE_EYE_DISTANCE / sy) * (IMAGE_HEIGHT / deltay);
+    }
+
+    // distance end
+
+
+
+
+
+
+
+
     if (face.getRightEyeOpenProbability() != null) {
       canvas.drawText(
           "Right eye open: " + String.format(Locale.US, "%.2f", face.getRightEyeOpenProbability()),
@@ -246,6 +288,12 @@ public class FaceGraphic extends Graphic {
           idPaints[colorID]);
       yLabelOffset += lineHeight;
     }
+
+
+
+
+
+
     assert leftEye != null;
     assert rightEye != null;
 
@@ -253,6 +301,10 @@ public class FaceGraphic extends Graphic {
 
 
 
+
+
+
+    int dis = (int) (distance/10);
     canvas.drawText(
         "EulerX: " + face.getHeadEulerAngleX(), left, top + yLabelOffset, idPaints[colorID]);
     yLabelOffset += lineHeight;
@@ -260,7 +312,8 @@ public class FaceGraphic extends Graphic {
         "EulerY: " + face.getHeadEulerAngleY(), left, top + yLabelOffset, idPaints[colorID]);
     yLabelOffset += lineHeight;
     canvas.drawText(
-        "EulerZ: " + face.getHeadEulerAngleZ(), left, top + yLabelOffset, idPaints[colorID]);
+        "distance: " +dis+"cm", left, top + yLabelOffset, idPaints[colorID]);
+
 
     // Draw facial landmarks
     drawFaceLandmark(canvas, FaceLandmark.LEFT_EYE);
@@ -280,5 +333,21 @@ public class FaceGraphic extends Graphic {
           FACE_POSITION_RADIUS,
           facePositionPaint);
     }
+  }
+
+  public static float getDeltaX() {
+    return deltaX;
+  }
+
+  public static float getDeltaY() {
+    return deltaY;
+  }
+
+  public static void setDeltaX(float deltaX) {
+    FaceGraphic.deltaX = deltaX;
+  }
+
+  public static void setDeltaY(float deltaY) {
+    FaceGraphic.deltaY = deltaY;
   }
 }
