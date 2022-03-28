@@ -17,37 +17,29 @@
 package com.google.mlkit.vision.demo.java;
 
 
-import static com.google.mlkit.vision.demo.CameraSource.getF;
-import static com.google.mlkit.vision.demo.CameraSource.getSensorX;
-import static com.google.mlkit.vision.demo.CameraSource.getSensorY;
-import static com.google.mlkit.vision.demo.java.facedetector.FaceGraphic.getDeltaX;
-import static com.google.mlkit.vision.demo.java.facedetector.FaceGraphic.getDeltaY;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.common.annotation.KeepName;
 import com.google.mlkit.vision.demo.CameraSource;
 import com.google.mlkit.vision.demo.CameraSourcePreview;
@@ -58,6 +50,7 @@ import com.google.mlkit.vision.demo.java.facedetector.FaceDetectorProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -332,15 +325,6 @@ public final class LivePreviewActivity extends AppCompatActivity
     Log.i(TAG, "Permission NOT granted: " + permission);
     return false;
   }
-
-
-
-
-
-
-
-
-
 
 
 
