@@ -1,3 +1,5 @@
+com/google/mlkit/vision/demo/java/DATA.java
+ com.google.mlkit.vision.demo.java.DATA
 com/google/mlkit/vision/demo/preference/LivePreviewPreferenceFragment.java
  com.google.mlkit.vision.demo.preference.LivePreviewPreferenceFragment
 com/google/mlkit/vision/demo/preference/PreferenceUtils.java
@@ -31,9 +33,8 @@ com/google/mlkit/vision/demo/CameraSource.java
  com.google.mlkit.vision.demo.CameraSource$CameraPreviewCallback
  com.google.mlkit.vision.demo.CameraSource$FrameProcessingRunnable
  com.google.mlkit.vision.demo.CameraSource$SizePair
-com/google/mlkit/vision/demo/java/VisionProcessorBase.java
- com.google.mlkit.vision.demo.java.VisionProcessorBase
- com.google.mlkit.vision.demo.java.VisionProcessorBase$1
+com/google/mlkit/vision/demo/java/LivePreviewActivity.java
+ com.google.mlkit.vision.demo.java.LivePreviewActivity
 com/google/mlkit/vision/demo/preference/SettingsActivity.java
  com.google.mlkit.vision.demo.preference.SettingsActivity
  com.google.mlkit.vision.demo.preference.SettingsActivity$LaunchSource
@@ -43,5 +44,6 @@ com/google/mlkit/vision/demo/CameraSourcePreview.java
  com.google.mlkit.vision.demo.CameraSourcePreview$SurfaceCallback
 com/google/mlkit/vision/demo/ScopedExecutor.java
  com.google.mlkit.vision.demo.ScopedExecutor
-com/google/mlkit/vision/demo/java/LivePreviewActivity.java
- com.google.mlkit.vision.demo.java.LivePreviewActivity
+com/google/mlkit/vision/demo/java/VisionProcessorBase.java
+ com.google.mlkit.vision.demo.java.VisionProcessorBase
+ com.google.mlkit.vision.demo.java.VisionProcessorBase$1
