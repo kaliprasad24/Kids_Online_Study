@@ -66,6 +66,7 @@ public class FaceDetectorProcessor extends VisionProcessorBase<List<Face>> {
 
   @Override
   protected Task<List<Face>> detectInImage(InputImage image) {
+    image.getBitmapInternal();
     return detector.process(image);
   }
 
@@ -74,9 +75,12 @@ public class FaceDetectorProcessor extends VisionProcessorBase<List<Face>> {
     for (Face face : faces) {
       graphicOverlay.add(new FaceGraphic(graphicOverlay, face));
       logExtrasForTesting(face);
+      //new stress(face);
       //distance(face);
     }
   }
+
+
 
 //  public synchronized void distance(Face face){
 //    if (face!= null) {

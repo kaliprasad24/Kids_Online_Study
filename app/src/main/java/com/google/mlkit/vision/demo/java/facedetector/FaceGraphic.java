@@ -19,23 +19,24 @@ import android.content.res.Configuration;
 import static com.google.mlkit.vision.demo.CameraSource.getF;
 import static com.google.mlkit.vision.demo.CameraSource.getSensorX;
 import static com.google.mlkit.vision.demo.CameraSource.getSensorY;
-
+import java.lang.Math;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.widget.TextView;
 
-import com.google.mlkit.vision.demo.CameraSource;
 import com.google.mlkit.vision.demo.GraphicOverlay;
+
 import com.google.mlkit.vision.demo.GraphicOverlay.Graphic;
 import com.google.mlkit.vision.demo.java.DATA;
 import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceContour;
 import com.google.mlkit.vision.face.FaceLandmark;
 import com.google.mlkit.vision.face.FaceLandmark.LandmarkType;
+
+import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
+
 
 /**
  * Graphic instance for rendering face position, contour, and landmarks within the associated
@@ -43,6 +44,9 @@ import java.util.Objects;
  */
 public class FaceGraphic extends Graphic {
 
+
+  // difference
+  public float diffarray;
 
   //distance
   public static float deltaX;
@@ -75,6 +79,7 @@ public class FaceGraphic extends Graphic {
           };
 
   private final Paint facePositionPaint;
+  private final Paint faceP;
   private final Paint[] idPaints;
   private final Paint[] boxPaints;
   private final Paint[] labelPaints;
@@ -89,6 +94,9 @@ public class FaceGraphic extends Graphic {
 
     facePositionPaint = new Paint();
     facePositionPaint.setColor(selectedColor);
+
+    faceP = new Paint();
+    faceP.setColor(Color.GREEN);
 
     int numColors = COLORS.length;
     idPaints = new Paint[numColors];
@@ -196,12 +204,78 @@ public class FaceGraphic extends Graphic {
     }
 
     // Draws all face contours.
+//    0-35	Face oval
+//    36-40	Left eyebrow (top)
+//    41-45	Left eyebrow (bottom)
+//    46-50	Right eyebrow (top)
+//    51-55	Right eyebrow (bottom)
+//    56-71	Left eye
+//    72-87	Right eye
+//    88-96	Upper lip (bottom)
+//    97-105	Lower lip (top)
+//    106-116	Upper lip (top)
+//    117-125	Lower lip (bottom)
+//    126, 127	Nose bridge
+//    128-130	Nose bottom (note that the center point is at index 128)
+//    131	Left cheek (center)
+//    132	Right cheek (center)
+
+    float num = -1;
+
+    float difference= 0 ;
+
+    ArrayList<PointF> ovel = new ArrayList<PointF>();
+
     for (FaceContour contour : face.getAllContours()) {
+
       for (PointF point : contour.getPoints()) {
+        num+=1;
+        if (num<35){
+          ovel.add(point);
+        }
+        if (num<35){
+          ovel.add(point);
+        }
+
+
+
+
         canvas.drawCircle(
-                translateX(point.x), translateY(point.y), FACE_POSITION_RADIUS, facePositionPaint);
+                translateX(point.x), translateY(point.y), FACE_POSITION_RADIUS, faceP);
+        canvas.drawText(String.valueOf(num),translateX(point.x),translateY(point.y),facePositionPaint);
       }
     }
+
+    for(int i=0;i<ovel.size()-1;i++){
+      difference += pdistance(ovel.get(i), ovel.get(i+1) );
+
+    }
+
+
+
+
+
+
+
+    // focus on screen
+    // 0 no stress
+    // 1 neutral
+    // 2 high stress
+    // 3 medium stress
+    // 4 low stress
+    String focus = null;
+    if (face.getSmilingProbability() != null && face.getRightEyeOpenProbability()!=null && face.getLeftEyeOpenProbability()!=null) {
+
+      float smile = face.getSmilingProbability();
+      float lEye = face.getLeftEyeOpenProbability();
+      float rEye = face.getRightEyeOpenProbability();
+      focus = focus(smile,lEye,rEye);
+
+    }
+
+
+
+
 
     // Draws smiling and left/right eye open probabilities.
     if (face.getSmilingProbability() != null) {
@@ -237,7 +311,10 @@ public class FaceGraphic extends Graphic {
               translateY(leftEye.getPosition().y) + ID_Y_OFFSET,
               idPaints[colorID]);
     }
+
+
     FaceLandmark rightEye = face.getLandmark(FaceLandmark.RIGHT_EYE);
+
 
     //distance
     if (leftEye!=null && rightEye!=null) {
@@ -308,10 +385,13 @@ public class FaceGraphic extends Graphic {
 
     int dis = (int) (distance/10);
     canvas.drawText(
-            "EulerX: " + face.getHeadEulerAngleX(), left, top + yLabelOffset, idPaints[colorID]);
+            "Stress: " +focus, left, top + yLabelOffset, idPaints[colorID]);
     yLabelOffset += lineHeight;
     canvas.drawText(
             "Distance :" + dis+"cm", left, top + yLabelOffset, idPaints[colorID]);
+    yLabelOffset += lineHeight;
+    canvas.drawText(
+            "circum :" + difference, left, top + yLabelOffset, idPaints[colorID]);
     yLabelOffset += lineHeight;
     /*
     canvas.drawText(
@@ -331,7 +411,7 @@ public class FaceGraphic extends Graphic {
     drawFaceLandmark(canvas, FaceLandmark.LEFT_CHEEK);
     drawFaceLandmark(canvas, FaceLandmark.RIGHT_CHEEK);
 
-
+    // angle pose
     double rotX = face.getHeadEulerAngleX();
     double pitch = DATA.pitchangle;
     double tilt = DATA.tiltangle;
@@ -417,6 +497,8 @@ public class FaceGraphic extends Graphic {
               "Posture: " + posture, left, top + yLabelOffset, idPaints[colorID]);
       yLabelOffset += lineHeight;
     }
+    // angle pose end
+
 
   }
 
@@ -446,4 +528,65 @@ public class FaceGraphic extends Graphic {
   public static void setDeltaY(float deltaY) {
     FaceGraphic.deltaY = deltaY;
   }
+
+  public PointF centroid(ArrayList<PointF> knots)  {
+    PointF center = new PointF();
+    double centroidX = 0, centroidY = 0;
+
+    for(PointF knot : knots) {
+      centroidX += knot.x;
+      centroidY += knot.y;
+    }
+    center.x = (float) (centroidX / knots.size());
+    center.y = (float) (centroidY / knots.size());
+
+    return center;
+  }
+
+  public float pdistance(PointF a,PointF b){
+    float l = b.x - a.x;
+    float r = b.y - a.y;
+    float diff = (float) Math.sqrt(l*l + r*r);
+    return  diff;
+  }
+  
+  // 0 no stress 
+  // 1 neutral 
+  // 2 high stress
+  // 3 medium stress 
+  // 4 low stress
+
+  public String focus(float smile, float leye, float reye){
+    // 0 no stress
+    // 1 neutral
+    // 2 high stress
+    // 3 medium stress
+    // 4 low stress
+    if(smile>0.8 ){
+      return "GOOD";
+    }
+    else if(smile <0.8 && smile >0.5){
+      return "neutral";
+    }
+    else {
+      if (leye < 0.2 && leye > 0.0 || reye < 0.2 && reye > 0.0){
+        // high stress
+        return "High Stress";
+      }
+      else if(leye < 0.5 && leye > 0.2 || reye < 0.5 && reye > 0.2 ){
+        // medium stress
+        return "Medium Stress";
+      }
+      else if(leye < 0.8 && leye > 0.5 || reye < 0.8 && reye > 0.5){
+        // low stress
+        return "Low Stress";
+      }
+      else {
+        //no stress
+        return "Good";
+      }
+    }
+  }
+
+
 }
