@@ -233,9 +233,7 @@ public class FaceGraphic extends Graphic {
         if (num<35){
           ovel.add(point);
         }
-        if (num<35){
-          ovel.add(point);
-        }
+
 
 
 
